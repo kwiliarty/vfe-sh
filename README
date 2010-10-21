@@ -1,3 +1,13 @@
+===== The Point =====
+
+This script automates the process of creating an .ogv, an .mp4, and an 
+optional .webm file for use in particular with the "Video for Everybody"
+HTML5 approach to web video. See:
+
+[[http://camendesign.com/code/video_for_everybody]]
+
+The script will also create an image to use as a poster for the video.
+
 ===== System Requirements =====
 
 I run this script from a bash terminal on Mac and Linux systems
