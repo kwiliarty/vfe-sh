@@ -1,0 +1,15 @@
+===== System Requirements =====
+
+I run this script from a bash terminal on Mac and Linux systems
+
+===== Dependencies =====
+
+  * [[http://ffmpeg.org|ffmpeg]] (v0.6)
+  * [[http://v2v.cc/~j/ffmpeg2theora/|ffmpeg2theora]]
+  * [[http://github.com/danielgtaylor/qtfaststart|qtfaststart.py]]
+
+===== Tips =====
+
+Run the bare command to see an explanation of the options
+
+At this point the only way to adjust the defaults is to edit the script.
