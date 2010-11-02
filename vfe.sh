@@ -1,9 +1,8 @@
 #!/bin/bash
 # video processing script
 # syntax vfe.sh [-options] invideo.ext [outvideo]
-# version 1.3 
-#  -- -l option to set langauge (eng is default)
-#  -- -m option to create a corresponding VP8 (.webm) file
+# version 1.4 
+#  -- -z option for setting the output audio sampling rate
 
 # handling for calls without arguments
 NO_ARGS=0;
@@ -24,6 +23,7 @@ then
 	echo "       transcoding if specs are right. qtfaststart.py will still run."
 	echo "  -l : set langauge using ISO 639 3-letter code (e.g., eng)"
 	echo "  -m : create a corresponding VP8 (.webm) file"
+	echo "  -z : set output audio sampling rate (in Hz)"
 	echo " "
 	exit $E_OPTERROR
 fi
@@ -35,9 +35,10 @@ videobitrate=1500
 framerate=30
 poster=0
 language="eng"
+audiorate=44100
 
 # process options for width and height
-while getopts ":w:h:b:f:p:qc:lm" Option
+while getopts ":w:h:b:f:p:qcl:mz:" Option
 do
 	case $Option in
 		w ) width=${OPTARG};;
@@ -49,6 +50,7 @@ do
 		c ) copy=1;;
 		l ) language=${OPTARG};;
 		m ) webm=1;;
+		z ) audiorate=${OPTARG};;
 		* ) echo " ";
 		    echo "  Unimplemented option chosen.";
 		    echo "  Enter the command without options for usage guide.";
@@ -63,6 +65,7 @@ shift $(($OPTIND - 1))
 width=$(( ${width} - $(( ${width} % 2 )) ))
 height=$(( ${height} - $(( ${height} % 2 )) ))
 
+# prepare some options strings for the transcoding commands
 size="${width}x${height}"
 
 # get the base part of the file name
@@ -91,6 +94,7 @@ ffmpeg2theora ${original} -o ${foldername}/${outname}.ogv \
  --height ${height} \
  --keyint 15 \
  --videobitrate ${videobitrate} \
+ --samplerate ${audiorate} \
  --soft-target
 
 # copy or transcode the mp4 video
@@ -99,13 +103,13 @@ then #copy the original file into the destination folder as a -ss.mp4
 	  #qtfaststart.py will still operate on this file
 	cp ${original} ${foldername}/${outname}-ss.mp4
 else #if the -c flag was not set, transcode with ffmpeg
-	ffmpeg -i ${original} -s ${size} -b ${videobitrate}k -r ${framerate} -vcodec libx264 -vpre ultrafast -vlang ${language} -alang ${language} -ar 44100 ${foldername}/${outname}-ss.mp4
+	ffmpeg -i ${original} -s ${size} -b ${videobitrate}k -r ${framerate} -vcodec libx264 -vpre ultrafast -vlang ${language} -alang ${language} -ar ${audiorate} ${foldername}/${outname}-ss.mp4
 fi
 
 # create a VP8 (.webm) file
 if [ ${webm} ] #if the -m flag was set
 then #transcode to .wegm
-	ffmpeg -i ${original} -s ${size} -b ${videobitrate}k -r ${framerate} -f webm -vlang ${language} -alang ${language} ${foldername}/${outname}.webm
+	ffmpeg -i ${original} -s ${size} -b ${videobitrate}k -r ${framerate} -f webm -vlang ${language} -alang ${language} -ar ${audiorate} ${foldername}/${outname}.webm
 fi
 
 # create the quickstart version of the mp4 video
