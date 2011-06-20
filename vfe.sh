@@ -1,8 +1,8 @@
 #!/bin/bash
 # video processing script
 # syntax vfe.sh [-options] invideo.ext [outvideo]
-# version 1.4 
-#  -- -z option for setting the output audio sampling rate
+# version 1.5 
+#  -- Use WebM video (when it is available) as source for poster
 
 # handling for calls without arguments
 NO_ARGS=0;
@@ -36,6 +36,7 @@ framerate=30
 poster=0
 language="eng"
 audiorate=44100
+postersource="mp4" #not controlled by a flag but depends on webm availability
 
 # process options for width and height
 while getopts ":w:h:b:f:p:qcl:mz:" Option
@@ -108,8 +109,9 @@ fi
 
 # create a VP8 (.webm) file
 if [ ${webm} ] #if the -m flag was set
-then #transcode to .wegm
+then #transcode to .webm (and use this file as the poster source)
 	ffmpeg -i ${original} -s ${size} -b ${videobitrate}k -r ${framerate} -f webm -vlang ${language} -alang ${language} -ar ${audiorate} ${foldername}/${outname}.webm
+	postersource="webm"
 fi
 
 # create the quickstart version of the mp4 video
@@ -119,7 +121,7 @@ qtfaststart.py ${foldername}/${outname}-ss.mp4 ${foldername}/${outname}.mp4
 rm ${foldername}/${outname}-ss.mp4
 
 # create the .png poster
-ffmpeg -i ${foldername}/${outname}.mp4 -r 1 -t 1 -ss ${poster} \
+ffmpeg -i ${foldername}/${outname}.${postersource} -r 1 -t 1 -ss ${poster} \
  -f image2 ${foldername}/${outname}.png
 
 # if the -q flag is set, create the poster.mp4 
