@@ -104,7 +104,7 @@ then #copy the original file into the destination folder as a -ss.mp4
 	  #qtfaststart.py will still operate on this file
 	cp ${original} ${foldername}/${outname}-ss.mp4
 else #if the -c flag was not set, transcode with ffmpeg
-	ffmpeg -i ${original} -s ${size} -b ${videobitrate}k -r ${framerate} -vcodec libx264 -vpre ultrafast -vlang ${language} -alang ${language} -ar ${audiorate} ${foldername}/${outname}-ss.mp4
+	ffmpeg -i ${original} -s ${size} -b ${videobitrate}k -r ${framerate} -vcodec libx264 -preset ultrafast -vlang ${language} -alang ${language} -ar ${audiorate} ${foldername}/${outname}-ss.mp4
 fi
 
 # create a VP8 (.webm) file
