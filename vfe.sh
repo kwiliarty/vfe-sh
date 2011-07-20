@@ -1,8 +1,8 @@
 #!/bin/bash
 # video processing script
 # syntax vfe.sh [-options] invideo.ext [outvideo]
-# version 1.5 
-#  -- Use WebM video (when it is available) as source for poster
+# version 1.6 
+#  -- Use the -preset switch rather than the -vpre switch (keeping up with changes to ffmpeg syntax)
 
 # handling for calls without arguments
 NO_ARGS=0;
