@@ -1,8 +1,8 @@
 #!/bin/bash
 # video processing script
 # syntax vfe.sh [-options] invideo.ext [outvideo]
-# version 1.6.1 
-#  -- add an option to use -vpre instead of -preset
+# version 1.7 
+#  -- use the -t flag to designate a libx264 preset
 
 # handling for calls without arguments
 NO_ARGS=0;
@@ -24,6 +24,7 @@ then
 	echo "  -l : set langauge using ISO 639 3-letter code (e.g., eng)"
 	echo "  -m : create a corresponding VP8 (.webm) file"
 	echo "  -z : set output audio sampling rate (in Hz)"
+	echo "  -t : select a libx264 preset"
 	echo "  -v : use -vpre instead of -preset (for older versions of ffmpeg)"
 	echo " "
 	exit $E_OPTERROR
@@ -38,10 +39,11 @@ poster=0
 language="eng"
 audiorate=44100
 postersource="mp4" #not controlled by a flag but depends on webm availability
+ffpreset="ultrafast"
 presetflag="-preset" #for newer versions of ffmpeg
 
 # process options for width and height
-while getopts ":w:h:b:f:p:qcl:mz:v" Option
+while getopts ":w:h:b:f:p:qcl:mz:t:v" Option
 do
 	case $Option in
 		w ) width=${OPTARG};;
@@ -54,6 +56,7 @@ do
 		l ) language=${OPTARG};;
 		m ) webm=1;;
 		z ) audiorate=${OPTARG};;
+		t ) ffpreset=${OPTARG};;
 		v ) presetflag="-vpre";;
 		* ) echo " ";
 		    echo "  Unimplemented option chosen.";
@@ -107,7 +110,7 @@ then #copy the original file into the destination folder as a -ss.mp4
 	  #qtfaststart.py will still operate on this file
 	cp ${original} ${foldername}/${outname}-ss.mp4
 else #if the -c flag was not set, transcode with ffmpeg
-	ffmpeg -i ${original} -s ${size} -b ${videobitrate}k -r ${framerate} -vcodec libx264 ${presetflag} ultrafast -vlang ${language} -alang ${language} -ar ${audiorate} ${foldername}/${outname}-ss.mp4
+	ffmpeg -i ${original} -s ${size} -b ${videobitrate}k -r ${framerate} -vcodec libx264 ${presetflag} ${ffpreset} -vlang ${language} -alang ${language} -ar ${audiorate} ${foldername}/${outname}-ss.mp4
 fi
 
 # create a VP8 (.webm) file
