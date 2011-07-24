@@ -1,8 +1,8 @@
 #!/bin/bash
 # video processing script
 # syntax vfe.sh [-options] invideo.ext [outvideo]
-# version 1.7 
-#  -- use the -t flag to designate a libx264 preset
+# version 1.7.1 
+#  -- tweaks to webm encode command to better reflect actual options. encode will be slower but file size will be smaller. Many of the usual arguments seem to be ignored by the ffmpeg webm encode, in particular the audio and video data rates.
 
 # handling for calls without arguments
 NO_ARGS=0;
@@ -116,7 +116,7 @@ fi
 # create a VP8 (.webm) file
 if [ ${webm} ] #if the -m flag was set
 then #transcode to .webm (and use this file as the poster source)
-	ffmpeg -i ${original} -s ${size} -b ${videobitrate}k -r ${framerate} -f webm -vlang ${language} -alang ${language} -ar ${audiorate} ${foldername}/${outname}.webm
+	ffmpeg -i ${original} -s ${size} -f webm -vcodec libvpx -acodec libvorbis -vlang ${language} -alang ${language} -aq 5 -quality best ${foldername}/${outname}.webm
 	postersource="webm"
 fi
 
