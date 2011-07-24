@@ -116,7 +116,7 @@ fi
 # create a VP8 (.webm) file
 if [ ${webm} ] #if the -m flag was set
 then #transcode to .webm (and use this file as the poster source)
-	ffmpeg -i ${original} -s ${size} -f webm -vcodec libvpx -acodec libvorbis -vlang ${language} -alang ${language} -aq 5 -quality best ${foldername}/${outname}.webm
+	ffmpeg -i ${original} -s ${size} -f webm -vcodec libvpx -acodec libvorbis -vlang ${language} -alang ${language} -ar ${audiorate} -aq 5 -quality best ${foldername}/${outname}.webm
 	postersource="webm"
 fi
 
