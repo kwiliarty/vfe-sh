@@ -134,6 +134,7 @@ postersource="mp4"
 # prepare for webm encode
 if [ ${webmquality} ] 
 then webmqualityexpression="-quality ${webmquality} "
+fi
 
 # create a VP8 (.webm) file
 if [ ${webm} ] #if the -m flag was set
