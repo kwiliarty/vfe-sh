@@ -52,8 +52,14 @@ presetflag="-preset" # for newer versions of ffmpeg. older versions use -vpre
 	# use this option only for ffmpeg > 6
 
 # user configuration
-if [ -r ~/.vferc ]; then
-	source ~/.vferc
+
+configfile=~/'.vferc'
+configfile_secured='/tmp/.vferc'
+
+if [ -r ${configfile} ] 
+then
+	egrep '^[^ ;&\$#`]*$' ${configfile} > ${configfile_secured}
+	source ${configfile_secured}
 fi
 
 # process options for width and height
