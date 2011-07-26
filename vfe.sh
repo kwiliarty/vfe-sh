@@ -30,17 +30,24 @@ then
 	exit $E_OPTERROR
 fi
 
-# defaults 
-width=750
-height=420
-videobitrate=1500
-framerate=30
-poster=0
-language="eng"
-audiorate=44100
-postersource="mp4" #not controlled by a flag but depends on webm availability
-ffpreset="ultrafast"
-presetflag="-preset" #for newer versions of ffmpeg
+# default settings
+width=750 # in pixels
+height=420 # in pixels
+videobitrate=1500 # in kb/s
+framerate=30 # in fps
+poster=0 # in seconds or hh:mm:ss
+# postermp4=1 # uncomment intial command to set as a default
+# copy=1 # uncomment intial command to set as a default 
+language="eng" # ISO 639 3-letter code
+webm=1 # uncomment intial command to set as a default 
+audiorate=44100 # in Hz
+ffpreset="ultrafast" # to see options try: sudo find /usr -iname '*.ffpreset'
+presetflag="-preset" # for newer versions of ffmpeg. older versions use -vpre
+
+# user configuration
+if [ -r ~/.vferc ]; then
+	source ~/.vferc
+fi
 
 # process options for width and height
 while getopts ":w:h:b:f:p:qcl:mz:t:v" Option
@@ -112,6 +119,9 @@ then #copy the original file into the destination folder as a -ss.mp4
 else #if the -c flag was not set, transcode with ffmpeg
 	ffmpeg -i ${original} -s ${size} -b ${videobitrate}k -r ${framerate} -vcodec libx264 ${presetflag} ${ffpreset} -vlang ${language} -alang ${language} -ar ${audiorate} ${foldername}/${outname}-ss.mp4
 fi
+
+# set default poster source
+postersource="mp4"
 
 # create a VP8 (.webm) file
 if [ ${webm} ] #if the -m flag was set
