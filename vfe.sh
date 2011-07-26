@@ -1,8 +1,9 @@
 #!/bin/bash
 # video processing script
 # syntax vfe.sh [-options] invideo.ext [outvideo]
-# version 1.7.1 
-#  -- tweaks to webm encode command to better reflect actual options. encode will be slower but file size will be smaller. Many of the usual arguments seem to be ignored by the ffmpeg webm encode, in particular the audio and video data rates.
+# version 1.8
+#  -- reads a user preference file at ~/.vferc
+#  -- option to set webm encoding quality
 
 # handling for calls without arguments
 NO_ARGS=0;
@@ -25,7 +26,10 @@ then
 	echo "  -m : create a corresponding VP8 (.webm) file"
 	echo "  -z : set output audio sampling rate (in Hz)"
 	echo "  -t : select a libx264 preset"
-	echo "  -v : use -vpre instead of -preset (for older versions of ffmpeg)"
+	echo "  -v : use -vpre (for older) or -preset (for newer) ffmpeg"
+	echo "  -y : set webm encode quality to 'best' or 'good'."
+	echo "       'best' is slow, but produces high quality at a lower bitrate"
+	echo "       (available only for ffmpeg > 6)"
 	echo " "
 	exit $E_OPTERROR
 fi
@@ -43,6 +47,9 @@ webm=1 # uncomment intial command to set as a default
 audiorate=44100 # in Hz
 ffpreset="ultrafast" # to see options try: sudo find /usr -iname '*.ffpreset'
 presetflag="-preset" # for newer versions of ffmpeg. older versions use -vpre
+# webmquality="good" # 'best' or 'good'. 
+	# 'best' is slow, high quality, low bitrate
+	# use this option only for ffmpeg > 6
 
 # user configuration
 if [ -r ~/.vferc ]; then
@@ -50,7 +57,7 @@ if [ -r ~/.vferc ]; then
 fi
 
 # process options for width and height
-while getopts ":w:h:b:f:p:qcl:mz:t:v" Option
+while getopts ":w:h:b:f:p:qcl:mz:t:v:y:" Option
 do
 	case $Option in
 		w ) width=${OPTARG};;
@@ -65,6 +72,7 @@ do
 		z ) audiorate=${OPTARG};;
 		t ) ffpreset=${OPTARG};;
 		v ) presetflag="-vpre";;
+		y ) webmquality=${OPTARG};;
 		* ) echo " ";
 		    echo "  Unimplemented option chosen.";
 		    echo "  Enter the command without options for usage guide.";
@@ -123,10 +131,14 @@ fi
 # set default poster source
 postersource="mp4"
 
+# prepare for webm encode
+if [ ${webmquality} ] 
+then webmqualityexpression="-quality ${webmquality} "
+
 # create a VP8 (.webm) file
 if [ ${webm} ] #if the -m flag was set
 then #transcode to .webm (and use this file as the poster source)
-	ffmpeg -i ${original} -s ${size} -f webm -vcodec libvpx -acodec libvorbis -vlang ${language} -alang ${language} -ar ${audiorate} -aq 5 -quality best ${foldername}/${outname}.webm
+	ffmpeg -i ${original} -s ${size} -f webm -vcodec libvpx -acodec libvorbis -vlang ${language} -alang ${language} -ar ${audiorate} -aq 5 ${webmqualityexpression}${foldername}/${outname}.webm
 	postersource="webm"
 fi
 
