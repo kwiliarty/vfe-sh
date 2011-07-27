@@ -35,19 +35,45 @@ then
 fi
 
 # default settings
-width=750 # in pixels
-height=420 # in pixels
-videobitrate=1500 # in kb/s
-framerate=30 # in fps
-poster=0 # in seconds or hh:mm:ss
-# postermp4=1 # uncomment intial command to set as a default
-# copy=1 # uncomment intial command to set as a default 
-language="eng" # ISO 639 3-letter code
-webm=1 # uncomment intial command to set as a default 
-audiorate=44100 # in Hz
-ffpreset="ultrafast" # to see options try: sudo find /usr -iname '*.ffpreset'
-presetflag="-preset" # for newer versions of ffmpeg. older versions use -vpre
-# webmquality="good" # 'best' or 'good'. 
+
+width=750 
+# in pixels
+
+height=420 
+# in pixels
+
+videobitrate=1500 
+# in kb/s
+
+framerate=30 
+# in fps
+
+poster=0 
+# in seconds or hh:mm:ss
+
+# postermp4=1 
+# uncomment intial command to set as a default
+
+# copy=1 
+# uncomment intial command to set as a default 
+
+language="eng" 
+# ISO 639 3-letter code
+
+webm=1 
+# uncomment intial command to set as a default 
+
+audiorate=44100 
+# in Hz
+
+ffpreset="ultrafast" 
+# to see options try: sudo find /usr -iname '*.ffpreset'
+
+presetflag="-preset" 
+# for newer versions of ffmpeg. older versions use -vpre
+
+# webmquality="good" 
+# 'best' or 'good'. 
 	# 'best' is slow, high quality, low bitrate
 	# use this option only for ffmpeg > 6
 
