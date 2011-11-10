@@ -22,7 +22,11 @@ I run this script from a bash terminal on Mac and Linux systems
 
 Run the bare command to see an explanation of the options
 
-At this point the only way to adjust the defaults is to edit the script.
+===== Defaults =====
+
+You can set your own default preferences by creating a .vferc file and keeping it at ~/.vferc
+
+You can use the sample file in this repository as a model
 
 ===== Note =====
 
