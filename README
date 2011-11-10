@@ -28,6 +28,14 @@ You can set your own default preferences by creating a .vferc file and keeping i
 
 You can use the sample file in this repository as a model
 
+===== Presets =====
+
+You can also create vfe preset files to handle recurrent patterns of settings
+
+Presets apply after the preferences you set in your .vferc
+
+You can use the sample file in this repository as a model
+
 ===== Note =====
 
 Older versions of the project can be viewed at:

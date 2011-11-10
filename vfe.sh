@@ -1,9 +1,9 @@
 #!/bin/bash
 # video processing script
 # syntax vfe.sh [-options] invideo.ext [outvideo]
-# version 1.8
-#  -- reads a user preference file at ~/.vferc
-#  -- option to set webm encoding quality
+# version 1.9
+#  -- reads a preset file at arbitrary location
+#  ---- preset values will apply after any defaults in .vferc
 
 # handling for calls without arguments
 NO_ARGS=0;
@@ -30,6 +30,7 @@ then
 	echo "  -y : set webm encode quality to 'best' or 'good'."
 	echo "       'best' is slow, but produces high quality at a lower bitrate"
 	echo "       (available only for ffmpeg > 6)"
+	echo "  -e : path to preset file"
 	echo " "
 	exit $E_OPTERROR
 fi
@@ -88,8 +89,8 @@ then
 	source ${configfile_secured}
 fi
 
-# process options for width and height
-while getopts ":w:h:b:f:p:qcl:mz:t:v:y:" Option
+# process options for width, height, etc.
+while getopts ":w:h:b:f:p:qcl:mz:t:v:y:e:" Option
 do
 	case $Option in
 		w ) width=${OPTARG};;
@@ -105,6 +106,7 @@ do
 		t ) ffpreset=${OPTARG};;
 		v ) presetflag="-vpre";;
 		y ) webmquality=${OPTARG};;
+		e ) vfepreset=${OPTARG};;
 		* ) echo " ";
 		    echo "  Unimplemented option chosen.";
 		    echo "  Enter the command without options for usage guide.";
@@ -114,6 +116,15 @@ do
 done
 
 shift $(($OPTIND - 1))
+
+# apply values from a vfe preset file if the -e flag is set and the file exists
+
+if [ ${vfepreset} ] && [ -r "${vfepreset}" ]
+then
+	tmppreset='/tmp/tmppreset'
+	egrep '^[^ ;&\$#`]*$' "${vfepreset}" > ${tmppreset}
+	source ${tmppreset}
+fi
 
 # subtract 1 from odd dimensions
 width=$(( ${width} - $(( ${width} % 2 )) ))

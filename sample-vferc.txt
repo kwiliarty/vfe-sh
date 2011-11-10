@@ -1,5 +1,12 @@
 # To set user preferences, edit this file and
 # save it as ~/.vferc
+#
+# You can also use this file as the basis for vfe preset files
+# Use a preset file for recurrent patterns of settings
+# Presets apply after the preferences in your .vferc
+# Save preset files wherever you like
+# Invoke them with the -e flag
+# 
 # lines with whitespace will not be read
 
 width=750
@@ -36,7 +43,7 @@ ffpreset="ultrafast"
 # to see options try: sudo find /usr -iname '*.ffpreset'
 
 presetflag="-preset"
-# for newer versions of ffmpeg. older versions use -vpre
+# newer versions of ffmpeg use -preset. older versions use -vpre
 
 # webmquality="good"
 # 'best' or 'good'.
