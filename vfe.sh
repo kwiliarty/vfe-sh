@@ -1,9 +1,8 @@
 #!/bin/bash
 # video processing script
 # syntax vfe.sh [-options] invideo.ext [outvideo]
-# version 1.9
-#  -- reads a preset file at arbitrary location
-#  ---- preset values will apply after any defaults in .vferc
+# version 1.10
+#  -- better management of WebM bitrate
 
 # handling for calls without arguments
 NO_ARGS=0;
@@ -77,6 +76,7 @@ presetflag="-preset"
 # 'best' or 'good'. 
 	# 'best' is slow, high quality, low bitrate
 	# use this option only for ffmpeg > 6
+	# leave empty to let the video bitrate prevail
 
 # user configuration
 
@@ -182,7 +182,7 @@ fi
 # create a VP8 (.webm) file
 if [ ${webm} ] #if the -m flag was set
 then #transcode to .webm (and use this file as the poster source)
-	ffmpeg -i ${original} -s ${size} -f webm -vcodec libvpx -acodec libvorbis -vlang ${language} -alang ${language} -ar ${audiorate} -aq 5 ${webmqualityexpression}${foldername}/${outname}.webm
+	ffmpeg -i ${original} -s ${size} -f webm -vcodec libvpx -acodec libvorbis -vlang ${language} -alang ${language} -ar ${audiorate} -aq 5 -vb ${videobitrate}k ${webmqualityexpression}${foldername}/${outname}.webm
 	postersource="webm"
 fi
 

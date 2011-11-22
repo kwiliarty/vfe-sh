@@ -49,3 +49,4 @@ presetflag="-preset"
 # 'best' or 'good'.
 	# 'best' is slow, high quality, low bitrate
 	# use this option only for ffmpeg > 6
+	# Leave this option unset to let the video bitrate prevail
