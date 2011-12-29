@@ -153,14 +153,16 @@ foldername=${outname}-${timestamp}
 mkdir ${foldername}
 
 # process the ogg/theora video
-ffmpeg2theora ${original} -o ${foldername}/${outname}.ogv \
- --framerate ${framerate} \
- --width ${width} \
- --height ${height} \
- --keyint 15 \
- --videobitrate ${videobitrate} \
- --samplerate ${audiorate} \
- --soft-target
+#ffmpeg2theora ${original} -o ${foldername}/${outname}.ogv \
+# --framerate ${framerate} \
+# --width ${width} \
+# --height ${height} \
+# --keyint 15 \
+# --videobitrate ${videobitrate} \
+# --samplerate ${audiorate} \
+# --soft-target
+ffmpeg -i ${original} -s ${size} -b ${videobitrate}k -r ${framerate} -vcodec libtheora -vlang ${language} -alang ${language} -ar ${audiorate} -acodec libvorbis ${foldername}/${outname}.ogv
+
 
 # copy or transcode the mp4 video
 if [ ${copy} ] #if the -c flag was set
