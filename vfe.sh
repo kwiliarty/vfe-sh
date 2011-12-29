@@ -2,10 +2,10 @@
 # video processing script
 # syntax vfe.sh [-options] invideo.ext [outvideo]
 # version 1.11
-#  -- replaces ffmpeg2theora with comparable ffmpeg
-#  --- eliminates dependency on ffmpeg2theora
-#  --- works with broader range of input formats
-#  --- handles anamorphic pixel aspect ratios more consistently
+# - replaces ffmpeg2theora with comparable ffmpeg
+# -- eliminates dependency on ffmpeg2theora
+# -- works with broader range of input formats
+# -- handles anamorphic pixel aspect ratios more consistently
 
 # handling for calls without arguments
 NO_ARGS=0;
