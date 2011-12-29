@@ -1,8 +1,11 @@
 #!/bin/bash
 # video processing script
 # syntax vfe.sh [-options] invideo.ext [outvideo]
-# version 1.10
-#  -- better management of WebM bitrate
+# version 1.11
+#  -- replaces ffmpeg2theora with comparable ffmpeg
+#  --- eliminates dependency on ffmpeg2theora
+#  --- works with broader range of input formats
+#  --- handles anamorphic pixel aspect ratios more consistently
 
 # handling for calls without arguments
 NO_ARGS=0;
@@ -153,14 +156,6 @@ foldername=${outname}-${timestamp}
 mkdir ${foldername}
 
 # process the ogg/theora video
-#ffmpeg2theora ${original} -o ${foldername}/${outname}.ogv \
-# --framerate ${framerate} \
-# --width ${width} \
-# --height ${height} \
-# --keyint 15 \
-# --videobitrate ${videobitrate} \
-# --samplerate ${audiorate} \
-# --soft-target
 ffmpeg -i ${original} -s ${size} -b ${videobitrate}k -r ${framerate} -vcodec libtheora -vlang ${language} -alang ${language} -ar ${audiorate} -acodec libvorbis ${foldername}/${outname}.ogv
 
 
