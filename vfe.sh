@@ -1,11 +1,8 @@
 #!/bin/bash
 # video processing script
 # syntax vfe.sh [-options] invideo.ext [outvideo]
-# version 1.11
-# - replaces ffmpeg2theora with comparable ffmpeg
-# -- eliminates dependency on ffmpeg2theora
-# -- works with broader range of input formats
-# -- handles anamorphic pixel aspect ratios more consistently
+# version 1.12
+# - let the -c flag operate on .webm and .ogv originals as well as on .mp4's
 
 # handling for calls without arguments
 NO_ARGS=0;
@@ -22,7 +19,7 @@ then
 	echo "  -f : framerate (per second)"
 	echo "  -p : poster frame (in seconds or hh:mm:ss)"
 	echo "  -q : create poster.mp4 for quicktime embeds"
-	echo "  -c : copy input file as basis for output .mp4. Faster than"
+	echo "  -c : copy input file to use as one of the outputs. Faster than"
 	echo "       transcoding if specs are right. qtfaststart.py will still run."
 	echo "  -l : set langauge using ISO 639 3-letter code (e.g., eng)"
 	echo "  -m : create a corresponding VP8 (.webm) file"
@@ -81,7 +78,7 @@ presetflag="-preset"
 	# use this option only for ffmpeg > 6
 	# leave empty to let the video bitrate prevail
 
-# user configuration
+# read user configuration
 
 configfile=~/'.vferc'
 configfile_secured='/tmp/.vferc'
@@ -93,6 +90,7 @@ then
 fi
 
 # process options for width, height, etc.
+
 while getopts ":w:h:b:f:p:qcl:mz:t:v:y:e:" Option
 do
 	case $Option in
@@ -136,9 +134,10 @@ height=$(( ${height} - $(( ${height} % 2 )) ))
 # prepare some options strings for the transcoding commands
 size="${width}x${height}"
 
-# get the base part of the file name
+# parse the file name
 original=$1
 basename=`basename ${original%.*}`
+extension=`basename ${original##*.}`
 
 # set the output name
 if [ $2 ] #if output name was provided in the command
@@ -155,8 +154,15 @@ timestamp=$(date "+%Y%m%d%H%M")
 foldername=${outname}-${timestamp}
 mkdir ${foldername}
 
-# process the ogg/theora video
-ffmpeg -i ${original} -s ${size} -b ${videobitrate}k -r ${framerate} -vcodec libtheora -vlang ${language} -alang ${language} -ar ${audiorate} -acodec libvorbis ${foldername}/${outname}.ogv
+# copy or process the ogg/theora video
+if [ ${copy} ] && [ ${extension}='ogv' ] #if the -c flag is set and file is ogv
+then #copy the original file into the destination folder
+	echo "Copying the original .ogv file"
+	cp ${original} ${foldername}/${outname}.ogv
+else #transcode with ffmpeg
+	echo "Transcoding to Ogg/Theora"
+	ffmpeg -i ${original} -s ${size} -b ${videobitrate}k -r ${framerate} -vcodec libtheora -vlang ${language} -alang ${language} -ar ${audiorate} -acodec libvorbis ${foldername}/${outname}.ogv
+fi
 
 
 # copy or transcode the mp4 video
