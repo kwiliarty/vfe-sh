@@ -155,22 +155,24 @@ foldername=${outname}-${timestamp}
 mkdir ${foldername}
 
 # copy or process the ogg/theora video
-if [ ${copy} ] && [ ${extension}='ogv' ] #if the -c flag is set and file is ogv
+if [ ${copy} ] && [ "${extension}" = "ogv" ] #if -c flag set and file ogv
 then #copy the original file into the destination folder
 	echo "Copying the original .ogv file"
 	cp ${original} ${foldername}/${outname}.ogv
 else #transcode with ffmpeg
-	echo "Transcoding to Ogg/Theora"
+	echo "Transcoding to .ogv"
 	ffmpeg -i ${original} -s ${size} -b ${videobitrate}k -r ${framerate} -vcodec libtheora -vlang ${language} -alang ${language} -ar ${audiorate} -acodec libvorbis ${foldername}/${outname}.ogv
 fi
 
 
 # copy or transcode the mp4 video
-if [ ${copy} ] #if the -c flag was set
+if [ ${copy} ] && [ "${extension}" = "mp4" ] #if the -c flag set and file is mp4
 then #copy the original file into the destination folder as a -ss.mp4
 	  #qtfaststart.py will still operate on this file
+	echo "Copying the original .mp4 file"
 	cp ${original} ${foldername}/${outname}-ss.mp4
 else #if the -c flag was not set, transcode with ffmpeg
+	echo "Trancoding to .mp4"
 	ffmpeg -i ${original} -s ${size} -b ${videobitrate}k -r ${framerate} -vcodec libx264 ${presetflag} ${ffpreset} -vlang ${language} -alang ${language} -ar ${audiorate} ${foldername}/${outname}-ss.mp4
 fi
 
