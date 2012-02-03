@@ -184,10 +184,17 @@ if [ ${webmquality} ]
 then webmqualityexpression="-quality ${webmquality} "
 fi
 
-# create a VP8 (.webm) file
+# create or copy a VP8 (.webm) file
 if [ ${webm} ] #if the -m flag was set
-then #transcode to .webm (and use this file as the poster source)
-	ffmpeg -i ${original} -s ${size} -f webm -vcodec libvpx -acodec libvorbis -vlang ${language} -alang ${language} -ar ${audiorate} -aq 5 -vb ${videobitrate}k ${webmqualityexpression}${foldername}/${outname}.webm
+then #copy or transcode to .webm (and use this file as the poster source)
+	if [ ${copy} ] && [ "${extension}" = "webm" ] #if -c flag and .webm file
+	then
+		echo "Copying the original .webm file"
+		cp ${original} ${foldername}/${outname}.webm
+	else
+		echo "Transcoding to .webm"
+		ffmpeg -i ${original} -s ${size} -f webm -vcodec libvpx -acodec libvorbis -vlang ${language} -alang ${language} -ar ${audiorate} -aq 5 -vb ${videobitrate}k ${webmqualityexpression}${foldername}/${outname}.webm
+	fi
 	postersource="webm"
 fi
 
