@@ -15,6 +15,9 @@ width=750
 height=420
 # in pixels
 
+aspect=16:9
+# display aspect ratio as w:h
+
 videobitrate=1500
 # in kb/s
 

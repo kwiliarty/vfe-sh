@@ -1,8 +1,8 @@
 #!/bin/bash
 # video processing script
 # syntax vfe.sh [-options] invideo.ext [outvideo]
-# version 1.12
-# - let the -c flag operate on .webm and .ogv originals as well as on .mp4's
+# version 1.13
+# - use -a flag to set the display aspect ratio
 
 # handling for calls without arguments
 NO_ARGS=0;
@@ -16,6 +16,7 @@ then
 	echo "  -w : width (in pixels); odd values will be reduced by one"
 	echo "  -h : height (in pixels); odd values will be reduced by one"
 	echo "  -b : videobitrate (in kb/s)"
+	echo "  -a : display aspect ratio (w:h)"
 	echo "  -f : framerate (per second)"
 	echo "  -p : poster frame (in seconds or hh:mm:ss)"
 	echo "  -q : create poster.mp4 for quicktime embeds"
@@ -91,12 +92,13 @@ fi
 
 # process options for width, height, etc.
 
-while getopts ":w:h:b:f:p:qcl:mz:t:v:y:e:" Option
+while getopts ":w:h:b:a:f:p:qcl:mz:t:v:y:e:" Option
 do
 	case $Option in
 		w ) width=${OPTARG};;
 		h ) height=${OPTARG};;
 		b ) videobitrate=${OPTARG};;
+		a ) aspect=${OPTARG};;
 		f ) framerate=${OPTARG};;
 		p ) poster=${OPTARG};;
 		q ) postermp4=1;;
@@ -134,6 +136,14 @@ height=$(( ${height} - $(( ${height} % 2 )) ))
 # prepare some options strings for the transcoding commands
 size="${width}x${height}"
 
+# create the aspect string
+if [ ${aspect} ] # if the -a option was set
+then
+	aspectstring="-aspect ${aspect} "
+else
+	aspectstring=""
+fi
+
 # parse the file name
 original=$1
 basename=`basename ${original%.*}`
@@ -161,7 +171,7 @@ then #copy the original file into the destination folder
 	cp ${original} ${foldername}/${outname}.ogv
 else #transcode with ffmpeg
 	echo "Transcoding to .ogv"
-	ffmpeg -i ${original} -s ${size} -b ${videobitrate}k -r ${framerate} -vcodec libtheora -vlang ${language} -alang ${language} -ar ${audiorate} -acodec libvorbis ${foldername}/${outname}.ogv
+	ffmpeg -i ${original} -s ${size} ${aspectstring}-b ${videobitrate}k -r ${framerate} -vcodec libtheora -vlang ${language} -alang ${language} -ar ${audiorate} -acodec libvorbis ${foldername}/${outname}.ogv
 fi
 
 
@@ -173,7 +183,7 @@ then #copy the original file into the destination folder as a -ss.mp4
 	cp ${original} ${foldername}/${outname}-ss.mp4
 else #if the -c flag was not set, transcode with ffmpeg
 	echo "Trancoding to .mp4"
-	ffmpeg -i ${original} -s ${size} -b ${videobitrate}k -r ${framerate} -vcodec libx264 ${presetflag} ${ffpreset} -vlang ${language} -alang ${language} -ar ${audiorate} ${foldername}/${outname}-ss.mp4
+	ffmpeg -i ${original} -s ${size} ${aspectstring}-b ${videobitrate}k -r ${framerate} -vcodec libx264 ${presetflag} ${ffpreset} -vlang ${language} -alang ${language} -ar ${audiorate} ${foldername}/${outname}-ss.mp4
 fi
 
 # set default poster source
@@ -193,7 +203,7 @@ then #copy or transcode to .webm (and use this file as the poster source)
 		cp ${original} ${foldername}/${outname}.webm
 	else
 		echo "Transcoding to .webm"
-		ffmpeg -i ${original} -s ${size} -f webm -vcodec libvpx -acodec libvorbis -vlang ${language} -alang ${language} -ar ${audiorate} -aq 5 -vb ${videobitrate}k ${webmqualityexpression}${foldername}/${outname}.webm
+		ffmpeg -i ${original} -s ${size} ${aspectstring}-f webm -vcodec libvpx -acodec libvorbis -vlang ${language} -alang ${language} -ar ${audiorate} -aq 5 -vb ${videobitrate}k ${webmqualityexpression}${foldername}/${outname}.webm
 	fi
 	postersource="webm"
 fi
