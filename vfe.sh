@@ -1,8 +1,8 @@
 #!/bin/bash
 # video processing script
 # syntax vfe.sh [-options] invideo.ext [outvideo]
-# version 1.13
-# - use -a flag to set the display aspect ratio
+# version 2.0-dev
+# add avconv support
 
 # handling for calls without arguments
 NO_ARGS=0;
@@ -13,6 +13,7 @@ then
 	# explain usage and exit
 	echo " "
 	echo "  Usage: `basename $0` [-options] infile [outname]"
+	echo "  -d : choose a converter -- 'ffmpeg' or 'avconv'"
 	echo "  -w : width (in pixels); odd values will be reduced by one"
 	echo "  -h : height (in pixels); odd values will be reduced by one"
 	echo "  -b : videobitrate (in kb/s)"
@@ -36,6 +37,9 @@ then
 fi
 
 # default settings
+
+converter="ffmpeg"
+# ffmpeg or avconv
 
 width=750 
 # in pixels
@@ -92,9 +96,10 @@ fi
 
 # process options for width, height, etc.
 
-while getopts ":w:h:b:a:f:p:qcl:mz:t:v:y:e:" Option
+while getopts ":d:w:h:b:a:f:p:qcl:mz:t:v:y:e:" Option
 do
 	case $Option in
+		d ) converter=${OPTARG};;
 		w ) width=${OPTARG};;
 		h ) height=${OPTARG};;
 		b ) videobitrate=${OPTARG};;
@@ -129,6 +134,12 @@ then
 	source ${tmppreset}
 fi
 
+# if converter is not avconv, then it must be ffmpeg
+if [ "${converter}" != "avconv" ]
+then
+	converter="ffmpeg"
+fi
+
 # subtract 1 from odd dimensions
 width=$(( ${width} - $(( ${width} % 2 )) ))
 height=$(( ${height} - $(( ${height} % 2 )) ))
@@ -142,6 +153,14 @@ then
 	aspectstring="-aspect ${aspect} "
 else
 	aspectstring=""
+fi
+
+# create the lang strings
+if [ "${converter}" = "avconv" ] # when using avconv
+then
+	langstring=""
+else
+	langstring="-vlang ${language} -alang ${language} "
 fi
 
 # parse the file name
@@ -169,9 +188,9 @@ if [ ${copy} ] && [ "${extension}" = "ogv" ] #if -c flag set and file ogv
 then #copy the original file into the destination folder
 	echo "Copying the original .ogv file"
 	cp ${original} ${foldername}/${outname}.ogv
-else #transcode with ffmpeg
+else #transcode with ffmpeg or avconv
 	echo "Transcoding to .ogv"
-	ffmpeg -i ${original} -s ${size} ${aspectstring}-b ${videobitrate}k -r ${framerate} -vcodec libtheora -vlang ${language} -alang ${language} -ar ${audiorate} -acodec libvorbis ${foldername}/${outname}.ogv
+	${converter} -i ${original} -s ${size} ${aspectstring}-b ${videobitrate}k -r ${framerate} -vcodec libtheora ${langstring}-ar ${audiorate} -acodec libvorbis ${foldername}/${outname}.ogv
 fi
 
 
