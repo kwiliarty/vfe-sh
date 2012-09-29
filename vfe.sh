@@ -196,7 +196,9 @@ mkdir ${foldername}
 # copy or process the ogg/theora video
 if [ ${copy} ] && [ "${extension}" = "ogv" ] #if -c flag set and file ogv
 then #copy the original file into the destination folder
+	echo "**************************************"
 	echo "Copying the original .ogv file"
+	echo "**************************************"
 	cp ${original} ${foldername}/${outname}.ogv
 else #transcode with ffmpeg or avconv
 	echo "**************************************"
@@ -212,7 +214,9 @@ fi
 if [ ${copy} ] && [ "${extension}" = "mp4" ] #if the -c flag set and file is mp4
 then #copy the original file into the destination folder as a -ss.mp4
 	  #qtfaststart.py will still operate on this file
+	echo "**************************************"
 	echo "Copying the original .mp4 file"
+	echo "**************************************"
 	cp ${original} ${foldername}/${outname}-ss.mp4
 else #if the -c flag was not set, transcode with ffmpeg
 	echo "Trancoding to .mp4"
