@@ -2,7 +2,7 @@
 # video processing script
 # syntax vfe.sh [-options] invideo.ext [outvideo]
 # version 2.0-dev
-# --option to use ffmpeg or avconv 
+# --option to use ffmpeg or avconv command
 # --option to use libvorbis or vorbis codec
 # --outputs the command it runs so that you can see applied options
 
@@ -173,7 +173,7 @@ fi
 # create the lang strings
 if [ "${converter}" = "avconv" ] # when using avconv
 then
-	langstring=""
+	langstring="-metadata:s:a:0 language=${language} "
 else
 	langstring="-vlang ${language} -alang ${language} "
 fi
