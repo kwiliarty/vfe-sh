@@ -218,8 +218,12 @@ then #copy the original file into the destination folder as a -ss.mp4
 	echo "**************************************"
 	cp ${original} ${foldername}/${outname}-ss.mp4
 else #if the -c flag was not set, transcode with ffmpeg
+	echo "**************************************"
 	echo "Trancoding to .mp4"
-	ffmpeg -i ${original} -s ${size} ${aspectstring}-b ${videobitrate}k -r ${framerate} -ab ${audiosampling}k -vcodec libx264 ${presetflag} ${ffpreset} -vlang ${language} -alang ${language} -ar ${audiorate} ${foldername}/${outname}-ss.mp4
+	mpegcommand="${converter} -i ${original} -s ${size} ${aspectstring}-b ${videobitrate}k -r ${framerate} -ab ${audiosampling}k -vcodec libx264 ${presetflag} ${ffpreset} ${langstring}-ar ${audiorate} ${foldername}/${outname}-ss.mp4"
+	echo "${mpegcommand}"
+	echo "**************************************"
+	${mpegcommand}
 fi
 
 # set default poster source
