@@ -3,7 +3,6 @@
 # syntax vfe.sh [-options] invideo.ext [outvideo]
 # version 2.0-dev
 # --option to use ffmpeg or avconv command
-# --option to use libvorbis or vorbis codec
 # --outputs the command it runs so that you can see applied options
 
 # handling for calls without arguments
@@ -16,7 +15,6 @@ then
 	echo " "
 	echo "  Usage: `basename $0` [-options] infile [outname]"
 	echo "  -d : choose a converter -- 'ffmpeg' or 'avconv'"
-	echo "  -s : choose ogg audio codec -- 'libvorbis' or 'vorbis'"
 	echo "  -w : width (in pixels); odd values will be reduced by one"
 	echo "  -h : height (in pixels); odd values will be reduced by one"
 	echo "  -b : videobitrate (in kb/s)"
@@ -43,9 +41,6 @@ fi
 
 converter="ffmpeg"
 # ffmpeg or avconv
-
-oggcodec="libvorbis"
-# libvorbis or vorbis
 
 width=750 
 # in pixels
@@ -106,7 +101,6 @@ while getopts ":d:s:w:h:b:a:f:p:qcl:mz:t:v:y:e:" Option
 do
 	case $Option in
 		d ) converter=${OPTARG};;
-		s ) oggcodec=${OPTARG};;
 		w ) width=${OPTARG};;
 		h ) height=${OPTARG};;
 		b ) videobitrate=${OPTARG};;
@@ -149,12 +143,6 @@ then
 	converter="ffmpeg"
 fi
 
-# if oggcodec is not vorbis, then it must be libvorbis
-if [ "${oggcodec}" != "vorbis" ]
-then
-	oggcodec="libvorbis"
-fi
-
 # subtract 1 from odd dimensions
 width=$(( ${width} - $(( ${width} % 2 )) ))
 height=$(( ${height} - $(( ${height} % 2 )) ))
@@ -173,7 +161,8 @@ fi
 # create the lang strings
 if [ "${converter}" = "avconv" ] # when using avconv
 then
-	langstring="-metadata:s:a:0 language=${language} "
+	# langstring="-metadata:s:a:0 language=${language} "
+	langstring=""
 else
 	langstring="-vlang ${language} -alang ${language} "
 fi
@@ -205,7 +194,7 @@ then #copy the original file into the destination folder
 	cp ${original} ${foldername}/${outname}.ogv
 else #transcode with ffmpeg or avconv
 	echo "Transcoding to .ogv using the command:"
-	oggcommand="${converter} -i ${original} -s ${size} ${aspectstring}-b ${videobitrate}k -r ${framerate} -vcodec libtheora ${langstring}-ar ${audiorate} -acodec ${oggcodec} ${foldername}/${outname}.ogv"
+	oggcommand="${converter} -i ${original} -s ${size} ${aspectstring}-b ${videobitrate}k -r ${framerate} -vcodec libtheora ${langstring}-ar ${audiorate} -acodec ${foldername}/${outname}.ogv"
 	echo "${oggcommand}"
 	${oggcommand}
 fi
