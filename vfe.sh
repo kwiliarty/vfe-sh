@@ -167,8 +167,7 @@ fi
 # create the lang strings
 if [ "${converter}" = "avconv" ] # when using avconv
 then
-	# langstring="-metadata:s:a:0 language=${language} "
-	langstring=""
+	langstring="-metadata:s:a:0 language=${language} "
 else
 	langstring="-vlang ${language} -alang ${language} "
 fi
