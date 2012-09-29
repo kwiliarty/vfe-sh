@@ -205,7 +205,7 @@ then #copy the original file into the destination folder
 	cp ${original} ${foldername}/${outname}.ogv
 else #transcode with ffmpeg or avconv
 	echo "Transcoding to .ogv using the command:"
-	oggcommand="${converter} -i ${original} -s ${size} ${aspectstring}-b ${videobitrate}k -r ${framerate} -vcodec libtheora ${langstring}-ar ${audiorate} -acodec libvorbis ${foldername}/${outname}.ogv"
+	oggcommand="${converter} -i ${original} -s ${size} ${aspectstring}-b ${videobitrate}k -r ${framerate} -vcodec libtheora ${langstring}-ar ${audiorate} -acodec ${oggcodec} ${foldername}/${outname}.ogv"
 	echo "${oggcommand}"
 	${oggcommand}
 fi
