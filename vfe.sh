@@ -106,6 +106,7 @@ while getopts ":d:s:w:h:b:a:f:p:qcl:mz:t:v:y:e:" Option
 do
 	case $Option in
 		d ) converter=${OPTARG};;
+		s ) oggcodec=${OPTARG};;
 		w ) width=${OPTARG};;
 		h ) height=${OPTARG};;
 		b ) videobitrate=${OPTARG};;
@@ -131,8 +132,10 @@ done
 
 shift $(($OPTIND - 1))
 
-# apply values from a vfe preset file if the -e flag is set and the file exists
+#### manage some variables, defaults, and validation
+#### put strings into appropriate command form
 
+# apply values from a vfe preset file if the -e flag is set and the file exists
 if [ ${vfepreset} ] && [ -r "${vfepreset}" ]
 then
 	tmppreset='/tmp/tmppreset'
@@ -144,6 +147,12 @@ fi
 if [ "${converter}" != "avconv" ]
 then
 	converter="ffmpeg"
+fi
+
+# if oggcodec is not vorbis, then it must be libvorbis
+if [ "${oggcodec}" != "vorbis" ]
+then
+	oggcodec="libvorbis"
 fi
 
 # subtract 1 from odd dimensions
