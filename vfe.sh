@@ -220,7 +220,7 @@ then #copy the original file into the destination folder as a -ss.mp4
 	cp ${original} ${foldername}/${outname}-ss.mp4
 else #if the -c flag was not set, transcode with ffmpeg
 	echo "Trancoding to .mp4"
-	ffmpeg -i ${original} -s ${size} ${aspectstring}-b ${videobitrate}k -r ${framerate} -vcodec libx264 ${presetflag} ${ffpreset} -vlang ${language} -alang ${language} -ar ${audiorate} ${foldername}/${outname}-ss.mp4
+	ffmpeg -i ${original} -s ${size} ${aspectstring}-b ${videobitrate}k -r ${framerate} -ab ${audiosampling}k -vcodec libx264 ${presetflag} ${ffpreset} -vlang ${language} -alang ${language} -ar ${audiorate} ${foldername}/${outname}-ss.mp4
 fi
 
 # set default poster source
@@ -240,7 +240,7 @@ then #copy or transcode to .webm (and use this file as the poster source)
 		cp ${original} ${foldername}/${outname}.webm
 	else
 		echo "Transcoding to .webm"
-		ffmpeg -i ${original} -s ${size} ${aspectstring}-f webm -vcodec libvpx -acodec libvorbis -vlang ${language} -alang ${language} -ar ${audiorate} -aq 5 -vb ${videobitrate}k ${webmqualityexpression}${foldername}/${outname}.webm
+		ffmpeg -i ${original} -s ${size} ${aspectstring}-f webm -vcodec libvpx -acodec libvorbis -vlang ${language} -alang ${language} -ar ${audiorate} -ab ${audiosampling}k -aq 5 -vb ${videobitrate}k ${webmqualityexpression}${foldername}/${outname}.webm
 	fi
 	postersource="webm"
 fi
