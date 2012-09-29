@@ -199,9 +199,11 @@ then #copy the original file into the destination folder
 	echo "Copying the original .ogv file"
 	cp ${original} ${foldername}/${outname}.ogv
 else #transcode with ffmpeg or avconv
+	echo "**************************************"
 	echo "Transcoding to .ogv using the command:"
 	oggcommand="${converter} -i ${original} -s ${size} ${aspectstring}-b ${videobitrate}k -r ${framerate} -ab ${audiosampling}k -vcodec libtheora ${langstring}-ar ${audiorate} -acodec libvorbis ${foldername}/${outname}.ogv"
 	echo "${oggcommand}"
+	echo "*************************************"
 	${oggcommand}
 fi
 
