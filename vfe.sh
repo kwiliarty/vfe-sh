@@ -132,9 +132,6 @@ done
 
 shift $(($OPTIND - 1))
 
-#### manage some variables, defaults, and validation
-#### put strings into appropriate command form
-
 # apply values from a vfe preset file if the -e flag is set and the file exists
 if [ ${vfepreset} ] && [ -r "${vfepreset}" ]
 then
@@ -142,6 +139,9 @@ then
 	egrep '^[^ ;&\$#`]*$' "${vfepreset}" > ${tmppreset}
 	source ${tmppreset}
 fi
+
+#### manage some variables, defaults, and validation
+#### put strings into appropriate command form
 
 # if converter is not avconv, then it must be ffmpeg
 if [ "${converter}" != "avconv" ]
@@ -159,7 +159,7 @@ fi
 width=$(( ${width} - $(( ${width} % 2 )) ))
 height=$(( ${height} - $(( ${height} % 2 )) ))
 
-# prepare some options strings for the transcoding commands
+# create size string
 size="${width}x${height}"
 
 # create the aspect string
