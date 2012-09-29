@@ -3,6 +3,7 @@
 # syntax vfe.sh [-options] invideo.ext [outvideo]
 # version 2.0-dev
 # --option to use ffmpeg or avconv command
+# --option to set audio sampling rate
 # --outputs the command it runs so that you can see applied options
 
 # handling for calls without arguments
@@ -20,6 +21,7 @@ then
 	echo "  -b : videobitrate (in kb/s)"
 	echo "  -a : display aspect ratio (w:h)"
 	echo "  -f : framerate (per second)"
+	echo "  -r : audio sampling rate (in kb/s) (64 or 128 work best)"
 	echo "  -p : poster frame (in seconds or hh:mm:ss)"
 	echo "  -q : create poster.mp4 for quicktime embeds"
 	echo "  -c : copy input file to use as one of the outputs. Faster than"
@@ -53,6 +55,9 @@ videobitrate=1500
 
 framerate=30 
 # in fps
+
+audiosampling=128
+# in kb/s
 
 poster=0 
 # in seconds or hh:mm:ss
@@ -97,7 +102,7 @@ fi
 
 # process options for width, height, etc.
 
-while getopts ":d:s:w:h:b:a:f:p:qcl:mz:t:v:y:e:" Option
+while getopts ":d:w:h:b:a:f:r:p:qcl:mz:t:v:y:e:" Option
 do
 	case $Option in
 		d ) converter=${OPTARG};;
@@ -106,6 +111,7 @@ do
 		b ) videobitrate=${OPTARG};;
 		a ) aspect=${OPTARG};;
 		f ) framerate=${OPTARG};;
+		r ) audiosampling=${OPTARG};;
 		p ) poster=${OPTARG};;
 		q ) postermp4=1;;
 		c ) copy=1;;
@@ -194,7 +200,7 @@ then #copy the original file into the destination folder
 	cp ${original} ${foldername}/${outname}.ogv
 else #transcode with ffmpeg or avconv
 	echo "Transcoding to .ogv using the command:"
-	oggcommand="${converter} -i ${original} -s ${size} ${aspectstring}-b ${videobitrate}k -r ${framerate} -vcodec libtheora ${langstring}-ar ${audiorate} -acodec ${foldername}/${outname}.ogv"
+	oggcommand="${converter} -i ${original} -s ${size} ${aspectstring}-b ${videobitrate}k -r ${framerate} -ab ${audiosampling}k -vcodec libtheora ${langstring}-ar ${audiorate} -acodec libvorbis ${foldername}/${outname}.ogv"
 	echo "${oggcommand}"
 	${oggcommand}
 fi
