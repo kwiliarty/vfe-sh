@@ -2,7 +2,9 @@
 # video processing script
 # syntax vfe.sh [-options] invideo.ext [outvideo]
 # version 2.0-dev
-# add avconv support
+# --option to use ffmpeg or avconv 
+# --option to use libvorbis or vorbis codec
+# --outputs the command it runs so that you can see applied options
 
 # handling for calls without arguments
 NO_ARGS=0;
@@ -14,6 +16,7 @@ then
 	echo " "
 	echo "  Usage: `basename $0` [-options] infile [outname]"
 	echo "  -d : choose a converter -- 'ffmpeg' or 'avconv'"
+	echo "  -s : choose ogg audio codec -- 'libvorbis' or 'vorbis'"
 	echo "  -w : width (in pixels); odd values will be reduced by one"
 	echo "  -h : height (in pixels); odd values will be reduced by one"
 	echo "  -b : videobitrate (in kb/s)"
@@ -40,6 +43,9 @@ fi
 
 converter="ffmpeg"
 # ffmpeg or avconv
+
+oggcodec="libvorbis"
+# libvorbis or vorbis
 
 width=750 
 # in pixels
@@ -96,7 +102,7 @@ fi
 
 # process options for width, height, etc.
 
-while getopts ":d:w:h:b:a:f:p:qcl:mz:t:v:y:e:" Option
+while getopts ":d:s:w:h:b:a:f:p:qcl:mz:t:v:y:e:" Option
 do
 	case $Option in
 		d ) converter=${OPTARG};;
