@@ -239,11 +239,17 @@ if [ ${webm} ] #if the -m flag was set
 then #copy or transcode to .webm (and use this file as the poster source)
 	if [ ${copy} ] && [ "${extension}" = "webm" ] #if -c flag and .webm file
 	then
+		echo "**************************************"
 		echo "Copying the original .webm file"
+		echo "**************************************"
 		cp ${original} ${foldername}/${outname}.webm
 	else
+		echo "**************************************"
 		echo "Transcoding to .webm"
-		ffmpeg -i ${original} -s ${size} ${aspectstring}-f webm -vcodec libvpx -acodec libvorbis -vlang ${language} -alang ${language} -ar ${audiorate} -ab ${audiosampling}k -aq 5 -vb ${videobitrate}k ${webmqualityexpression}${foldername}/${outname}.webm
+		webmcommand="${converter} -i ${original} -s ${size} ${aspectstring}-f webm -vcodec libvpx -acodec libvorbis ${langstring}-ar ${audiorate} -ab ${audiosampling}k -aq 5 -vb ${videobitrate}k ${webmqualityexpression}${foldername}/${outname}.webm"
+		echo "${webmcommand}"
+		echo "**************************************"
+		${webmcommand}
 	fi
 	postersource="webm"
 fi
