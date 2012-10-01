@@ -3,7 +3,7 @@
 # syntax vfe.sh [-options] invideo.ext [outvideo]
 # version 2.0-dev
 # --option to use ffmpeg or avconv command
-# --option to set audio sampling rate
+# --option to set audio bit rate
 # --outputs the command it runs so that you can see applied options
 
 # handling for calls without arguments
@@ -21,7 +21,7 @@ then
 	echo "  -b : videobitrate (in kb/s)"
 	echo "  -a : display aspect ratio (w:h)"
 	echo "  -f : framerate (per second)"
-	echo "  -r : audio sampling rate (in kb/s) (64 or 128 work best)"
+	echo "  -r : audio bit rate (in kb/s) (64 or 128 recommended)"
 	echo "  -p : poster frame (in seconds or hh:mm:ss)"
 	echo "  -q : create poster.mp4 for quicktime embeds"
 	echo "  -c : copy input file to use as one of the outputs. Faster than"
@@ -56,7 +56,7 @@ videobitrate=1500
 framerate=30 
 # in fps
 
-audiosampling=128
+audiobitrate=128
 # in kb/s
 
 poster=0 
@@ -111,7 +111,7 @@ do
 		b ) videobitrate=${OPTARG};;
 		a ) aspect=${OPTARG};;
 		f ) framerate=${OPTARG};;
-		r ) audiosampling=${OPTARG};;
+		r ) audiobitrate=${OPTARG};;
 		p ) poster=${OPTARG};;
 		q ) postermp4=1;;
 		c ) copy=1;;
@@ -202,7 +202,7 @@ then #copy the original file into the destination folder
 else #transcode with ffmpeg or avconv
 	echo "**************************************"
 	echo "Transcoding to .ogv using the command:"
-	oggcommand="${converter} -i ${original} -s ${size} ${aspectstring}-b ${videobitrate}k -r ${framerate} -ab ${audiosampling}k -vcodec libtheora ${langstring}-ar ${audiorate} -acodec libvorbis ${foldername}/${outname}.ogv"
+	oggcommand="${converter} -i ${original} -s ${size} ${aspectstring}-b ${videobitrate}k -r ${framerate} -ab ${audiobitrate}k -vcodec libtheora ${langstring}-ar ${audiorate} -acodec libvorbis ${foldername}/${outname}.ogv"
 	echo "${oggcommand}"
 	echo "*************************************"
 	${oggcommand}
@@ -219,8 +219,8 @@ then #copy the original file into the destination folder as a -ss.mp4
 	cp ${original} ${foldername}/${outname}-ss.mp4
 else #if the -c flag was not set, transcode with ffmpeg
 	echo "**************************************"
-	echo "Trancoding to .mp4"
-	mpegcommand="${converter} -i ${original} -s ${size} ${aspectstring}-b ${videobitrate}k -r ${framerate} -ab ${audiosampling}k -vcodec libx264 ${presetflag} ${ffpreset} ${langstring}-ar ${audiorate} ${foldername}/${outname}-ss.mp4"
+	echo "Trancoding to .mp4 using the command:"
+	mpegcommand="${converter} -i ${original} -s ${size} ${aspectstring}-b ${videobitrate}k -r ${framerate} -ab ${audiobitrate}k -vcodec libx264 ${presetflag} ${ffpreset} ${langstring}-ar ${audiorate} ${foldername}/${outname}-ss.mp4"
 	echo "${mpegcommand}"
 	echo "**************************************"
 	${mpegcommand}
@@ -245,8 +245,8 @@ then #copy or transcode to .webm (and use this file as the poster source)
 		cp ${original} ${foldername}/${outname}.webm
 	else
 		echo "**************************************"
-		echo "Transcoding to .webm"
-		webmcommand="${converter} -i ${original} -s ${size} ${aspectstring}-f webm -vcodec libvpx -acodec libvorbis ${langstring}-ar ${audiorate} -ab ${audiosampling}k -aq 5 -vb ${videobitrate}k ${webmqualityexpression}${foldername}/${outname}.webm"
+		echo "Transcoding to .webm using the command:"
+		webmcommand="${converter} -i ${original} -s ${size} ${aspectstring}-f webm -vcodec libvpx -acodec libvorbis ${langstring}-ar ${audiorate} -ab ${audiobitrate}k -aq 5 -vb ${videobitrate}k ${webmqualityexpression}${foldername}/${outname}.webm"
 		echo "${webmcommand}"
 		echo "**************************************"
 		${webmcommand}
