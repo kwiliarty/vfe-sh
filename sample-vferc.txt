@@ -9,6 +9,8 @@
 # 
 # lines with whitespace will not be read
 
+converter="ffmpeg"
+
 width=750
 # in pixels
 
@@ -23,6 +25,9 @@ videobitrate=1500
 
 framerate=30
 # in fps
+
+audiobitrate=128
+# in kb/s, recommended values are 64 and 128
 
 poster=0
 # in seconds or hh:mm:ss
