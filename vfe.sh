@@ -200,7 +200,7 @@ then #copy the original file into the destination folder
 else #transcode with ffmpeg or avconv
 	echo "**************************************"
 	echo "Transcoding to .ogv using the command:"
-	oggcommand="${converter} -i ${original} -s ${size} ${aspectstring}-b ${videobitrate}k -r ${framerate} -ab ${audiobitrate}k -vcodec libtheora ${langstring}-ar ${audiorate} -acodec libvorbis ${foldername}/${outname}.ogv"
+	oggcommand="${converter} -i ${original} -s ${size} ${aspectstring}-b:v ${videobitrate}k -r ${framerate} -ab ${audiobitrate}k -vcodec libtheora ${langstring}-ar ${audiorate} -acodec libvorbis ${foldername}/${outname}.ogv"
 	echo "${oggcommand}"
 	echo "*************************************"
 	${oggcommand}
@@ -218,7 +218,7 @@ then #copy the original file into the destination folder as a -ss.mp4
 else #if the -c flag was not set, transcode with ffmpeg
 	echo "**************************************"
 	echo "Trancoding to .mp4 using the command:"
-	mpegcommand="${converter} -i ${original} -s ${size} ${aspectstring}-b ${videobitrate}k -r ${framerate} -ab ${audiobitrate}k -vcodec libx264 ${presetflag} ${ffpreset} ${langstring}-ar ${audiorate} ${foldername}/${outname}-ss.mp4"
+	mpegcommand="${converter} -i ${original} -s ${size} ${aspectstring}-b:v ${videobitrate}k -r ${framerate} -ab ${audiobitrate}k -vcodec libx264 ${presetflag} ${ffpreset} ${langstring}-ar ${audiorate} ${foldername}/${outname}-ss.mp4"
 	echo "${mpegcommand}"
 	echo "**************************************"
 	${mpegcommand}
