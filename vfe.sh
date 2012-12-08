@@ -3,6 +3,7 @@
 # syntax vfe.sh [-options] invideo.ext [outvideo]
 # version 3.0
 # --adjustments to work with ffmpeg 1+
+# ----using -b:v instead of -b which ffmpeg 1 considers 'ambiguous'
 
 # handling for calls without arguments
 NO_ARGS=0;
