@@ -168,7 +168,10 @@ if [ "${converter}" = "avconv" ] # when using avconv
 then
 	langstring="-metadata:s:a:0 language=${language} "
 else
-	langstring="-vlang ${language} -alang ${language} "
+	# for ffmpeg < 1
+	# langstring="-vlang ${language} -alang ${language} "
+	# for ffmpeg >= 1
+	langstring="-metadata:s:a:1 language=${language} "
 fi
 
 # parse the file name
