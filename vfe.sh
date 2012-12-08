@@ -1,10 +1,8 @@
 #!/bin/bash
 # video processing script
 # syntax vfe.sh [-options] invideo.ext [outvideo]
-# version 2.0
-# --option to use ffmpeg or avconv command
-# --option to set audio bit rate
-# --outputs the command it runs so that you can see applied options
+# version 3.0
+# --adjustments to work with ffmpeg 1+
 
 # handling for calls without arguments
 NO_ARGS=0;
