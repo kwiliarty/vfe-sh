@@ -1,9 +1,11 @@
 #!/bin/bash
 # video processing script
 # syntax vfe.sh [-options] invideo.ext [outvideo]
-# version 3.0
+# version 3.beta
 # --adjustments to work with ffmpeg 1+
 # ----using -b:v instead of -b which ffmpeg 1 considers 'ambiguous'
+# ----new syntax for setting language metadata
+# ----use of libx264 in ffmpeg 1+ apparently requires '-strict experimental'
 
 # handling for calls without arguments
 NO_ARGS=0;
