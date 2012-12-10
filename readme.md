@@ -16,7 +16,8 @@ I run this script from a bash terminal on Mac and Linux systems.
 
 Dependencies
 ------------
-  * [ffmpeg](http://ffmpeg.org) (v0.6) **OR** [libav](http://libav.org)
+  * [ffmpeg](http://ffmpeg.org) (>=v1) **OR** [libav](http://libav.org)
+    For ffmpeg < 1, try older versions of the script, such as 2.0
   * [qtfaststart.py](http://github.com/danielgtaylor/qtfaststart)
 
 
@@ -43,7 +44,7 @@ You can use the sample file in this repository as a model
 
 Note
 ====
-Older versions of the project can be viewed at
+The earliest versions of the project can be viewed at
 
 > http://kevinwiliarty.com/dokuwiki/doku.php/open/vfe_bash_script
 
