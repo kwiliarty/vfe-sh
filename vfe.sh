@@ -4,7 +4,7 @@
 # version 3.beta
 # --adjustments to work with ffmpeg 1+
 # ----using -b:v instead of -b which ffmpeg 1 considers 'ambiguous'
-# ----new syntax for setting language metadata
+# ----new unidied syntax for setting language metadata in ffmpeg and avconv
 # ----use of libx264 in ffmpeg 1+ apparently requires '-strict experimental'
 
 # handling for calls without arguments
@@ -165,16 +165,8 @@ else
 	aspectstring=""
 fi
 
-# create the lang strings
-if [ "${converter}" = "avconv" ] # when using avconv
-then
-	langstring="-metadata:s:a:0 language=${language} "
-else
-	# for ffmpeg < 1
-	# langstring="-vlang ${language} -alang ${language} "
-	# for ffmpeg >= 1
-	langstring="-metadata:s:a:1 language=${language} "
-fi
+# create the lang string
+langstring="-metadata:s language=${language} "
 
 # parse the file name
 original=$1
