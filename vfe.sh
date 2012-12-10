@@ -4,6 +4,7 @@
 # version 3.beta
 # --adjustments to work with ffmpeg 1+
 # ----using -b:v instead of -b which ffmpeg 1 considers 'ambiguous'
+# ----using -b:a for -ab for consistency in syntax style
 # ----new unidied syntax for setting language metadata in ffmpeg and avconv
 # ----use of libx264 in ffmpeg 1+ apparently requires '-strict experimental'
 
@@ -198,7 +199,7 @@ then #copy the original file into the destination folder
 else #transcode with ffmpeg or avconv
 	echo "**************************************"
 	echo "Transcoding to .ogv using the command:"
-	oggcommand="${converter} -i ${original} -s ${size} ${aspectstring}-b:v ${videobitrate}k -r ${framerate} -ab ${audiobitrate}k -vcodec libtheora ${langstring}-ar ${audiorate} -acodec libvorbis ${foldername}/${outname}.ogv"
+	oggcommand="${converter} -i ${original} -s ${size} ${aspectstring}-b:v ${videobitrate}k -r ${framerate} -b:a ${audiobitrate}k -vcodec libtheora ${langstring}-ar ${audiorate} -acodec libvorbis ${foldername}/${outname}.ogv"
 	echo "${oggcommand}"
 	echo "*************************************"
 	${oggcommand}
@@ -216,7 +217,7 @@ then #copy the original file into the destination folder as a -ss.mp4
 else #if the -c flag was not set, transcode with ffmpeg
 	echo "**************************************"
 	echo "Trancoding to .mp4 using the command:"
-	mpegcommand="${converter} -i ${original} -s ${size} ${aspectstring}-b:v ${videobitrate}k -r ${framerate} -ab ${audiobitrate}k -vcodec libx264 ${presetflag} ${ffpreset} ${langstring}-ar ${audiorate} -strict experimental ${foldername}/${outname}-ss.mp4"
+	mpegcommand="${converter} -i ${original} -s ${size} ${aspectstring}-b:v ${videobitrate}k -r ${framerate} -b:a ${audiobitrate}k -vcodec libx264 ${presetflag} ${ffpreset} ${langstring}-ar ${audiorate} -strict experimental ${foldername}/${outname}-ss.mp4"
 	echo "${mpegcommand}"
 	echo "**************************************"
 	${mpegcommand}
@@ -242,7 +243,7 @@ then #copy or transcode to .webm (and use this file as the poster source)
 	else
 		echo "**************************************"
 		echo "Transcoding to .webm using the command:"
-		webmcommand="${converter} -i ${original} -s ${size} ${aspectstring}-f webm -vcodec libvpx -acodec libvorbis ${langstring}-ar ${audiorate} -ab ${audiobitrate}k -aq 5 -vb ${videobitrate}k ${webmqualityexpression}${foldername}/${outname}.webm"
+		webmcommand="${converter} -i ${original} -s ${size} ${aspectstring}-f webm -vcodec libvpx -acodec libvorbis ${langstring}-ar ${audiorate} -b:a ${audiobitrate}k -aq 5 -vb ${videobitrate}k ${webmqualityexpression}${foldername}/${outname}.webm"
 		echo "${webmcommand}"
 		echo "**************************************"
 		${webmcommand}
