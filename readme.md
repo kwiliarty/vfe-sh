@@ -17,7 +17,7 @@ I run this script from a bash terminal on Mac and Linux systems.
 Dependencies
 ------------
   * [ffmpeg](http://ffmpeg.org) (>=v1) **OR** [libav](http://libav.org)
-    For ffmpeg < 1, try older versions of the script, such as 2.0
+    -- For ffmpeg < 1, try older versions of the script, such as 2.0
   * [qtfaststart.py](http://github.com/danielgtaylor/qtfaststart)
 
 
