@@ -1,7 +1,7 @@
 #!/bin/bash
 # video processing script
 # syntax vfe.sh [-options] invideo.ext [outvideo]
-# version 3.beta
+# version 3.0
 # --adjustments to work with ffmpeg 1+
 # ----using -b:v instead of -b which ffmpeg 1 considers 'ambiguous'
 # ----using -b:a for -ab for consistency in syntax style
