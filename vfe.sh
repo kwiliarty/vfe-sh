@@ -1,15 +1,8 @@
 #!/bin/bash
 # video processing script
 # syntax vfe.sh [-options] invideo.ext [outvideo]
-# version 3.0
-# --adjustments to work with ffmpeg 1+
-# ----using -b:v instead of -b which ffmpeg 1 considers 'ambiguous'
-# ----using -b:a for -ab for consistency in syntax style
-# ----using -c:v for -vcodec
-# ----using -c:a for -acodec
-# ----using aac to encode the .mp4
-# ----new unidied syntax for setting language metadata in ffmpeg and avconv
-# ----use of libx264 in ffmpeg 1+ apparently requires '-strict experimental'
+# version 3.1
+# --option to set form of qtfaststart command
 
 # handling for calls without arguments
 NO_ARGS=0;
@@ -40,6 +33,7 @@ then
 	echo "       'best' is slow, but produces high quality at a lower bitrate"
 	echo "       (available only for ffmpeg > 6)"
 	echo "  -e : path to preset file"
+	echo "  -s : command preference: qtfaststart or qtfaststart.py"
 	echo " "
 	exit $E_OPTERROR
 fi
@@ -94,6 +88,9 @@ presetflag="-preset"
 	# use this option only for ffmpeg > 6
 	# leave empty to let the video bitrate prevail
 
+faststartcommand="qtfaststart.py"
+# depending on your set-up, the other alternative is "qtfaststart"
+
 # read user configuration
 
 configfile=~/'.vferc'
@@ -107,7 +104,7 @@ fi
 
 # process options for width, height, etc.
 
-while getopts ":d:w:h:b:a:f:r:p:qcl:mz:t:v:y:e:" Option
+while getopts ":d:w:h:b:a:f:r:p:qcl:mz:t:v:y:e:s:" Option
 do
 	case $Option in
 		d ) converter=${OPTARG};;
@@ -127,6 +124,7 @@ do
 		v ) presetflag="-vpre";;
 		y ) webmquality=${OPTARG};;
 		e ) vfepreset=${OPTARG};;
+		s ) faststartcommand=${OPTARG};;
 		* ) echo " ";
 		    echo "  Unimplemented option chosen.";
 		    echo "  Enter the command without options for usage guide.";
@@ -255,7 +253,7 @@ then #copy or transcode to .webm (and use this file as the poster source)
 fi
 
 # create the quickstart version of the mp4 video
-qtfaststart.py ${foldername}/${outname}-ss.mp4 ${foldername}/${outname}.mp4
+${faststartcommand} ${foldername}/${outname}-ss.mp4 ${foldername}/${outname}.mp4
 
 # delete the slow start version
 rm ${foldername}/${outname}-ss.mp4

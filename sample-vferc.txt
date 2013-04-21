@@ -58,3 +58,6 @@ presetflag="-preset"
 	# 'best' is slow, high quality, low bitrate
 	# use this option only for ffmpeg > 6
 	# Leave this option unset to let the video bitrate prevail
+
+faststartcommand="qtfaststart.py"
+# depending on set-up the other alternative is "qtfaststart"
