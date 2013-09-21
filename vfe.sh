@@ -4,11 +4,62 @@
 # version 3.2
 # -- examine settings
 
+# function to examine settings
+examine_settings() {
+
+    line="                               "
+
+    postermp4pref="Do not create a poster for QT embed"
+    if [ ${postermp4} ]
+    then postermp4pref="Create a poster for QT embed"
+    fi
+
+    copypref="Do not use the input file as one of the outputs"
+    if [ ${copy} ] 
+    then copypref="Use the input file as one of the outputs"
+    fi
+
+    webmpref="Do not create a webm version"
+    if [ ${webm} ]
+    then webmpref="Create a webm version"
+    fi
+
+    examinepref="Do not show verbose settings information"
+    if [ ${examine} -eq 1 ]
+    then examinepref="Show verbose settings information"
+    fi
+
+    settings="$settings
+    $1
+
+      -d : converter=$converter ${line:10+${#converter}} : Use $converter to transcode media
+      -w : width=$width ${line:6+${#width}} : Width (in pixels) of output 
+      -h : height=$height ${line:7+${#height}} : Height (in pixels) of output
+      -a : aspect=$aspect ${line:7+${#aspect}} : Explicit Display Aspect Ration (DAR)
+      -b : videobitrate=$videobitrate ${line:13+${#videobitrate}} : Video bitrate (in kb/s)
+      -f : framerate=$framerate ${line:10+${#framerate}} : Framerate (per second)
+      -r : audiobitrate=$audiobitrate ${line:13+${#audiobitrate}} : Audio bitrate (in kb/s)
+      -p : poster=$poster ${line:7+${#poster}} : Designate a poster from (in seconds or hh:mm:ss)
+      -q : postermp4=$postermp4 ${line:10+${#postermp4}} : ${postermp4pref}
+      -c : copy=$copy ${line:5+${#copy}} : ${copypref}
+      -l : language=$language ${line:9+${#language}} : ISO 639 3-letter language code
+      -m : webm=$webm ${line:5+${#webm}} : ${webmpref}
+      -z : audiorate=$audiorate ${line:10+${#audiorate}} : Audio sampling rate (in Hz)
+      -t : ffpreset=$ffpreset ${line:9+${#ffpreset}} : Select a libx264 preset
+      -v : presetflag=$presetflag ${line:11+${#presetflag}} : '-preset' (or '-vpre' for older ffmpeg) 
+      -y : webmquality=$webmquality ${line:12+${#webmquality}} : 'best' or 'good'
+      -e : vfepreset=$vfepreset ${line:10+${#vfepreset}} : Path to preset file for vfe.sh
+      -s : faststartcommand=$faststartcommand ${line:17+${#faststartcommand}} : 'qtfaststart' or 'qtfaststart.py'
+      -x : examine=$examine ${line:8+${#examine}} : ${examinepref}
+    "
+}
+
 # handling for calls without arguments
 NO_ARGS=0;
 E_OPTERROR=85;
 
-if [ $# -eq "$NO_ARGS" ] #script called without args?
+# if [ $# -eq "$NO_ARGS" ] #script called without args?
+if [ -z "$1" ] # no file specified
 then  
 	# explain usage and exit
 	echo " "
@@ -95,6 +146,9 @@ faststartcommand="qtfaststart.py"
 # do not list out settings by default
 examine=0;
 
+# record default settings
+examine_settings "Default values set by vfe.sh"
+
 # read user configuration
 
 configfile=~/'.vferc'
@@ -105,6 +159,9 @@ then
 	egrep '^[^ ;&\$#`]*$' ${configfile} > ${configfile_secured}
 	source ${configfile_secured}
 fi
+
+# record config file settings
+examine_settings "Values after applying $configfile"
 
 # process options for width, height, etc.
 
@@ -129,7 +186,7 @@ do
 		y ) webmquality=${OPTARG};;
 		e ) vfepreset=${OPTARG};;
 		s ) faststartcommand=${OPTARG};;
-		s ) examine=1;;
+		x ) examine=1;;
 		* ) echo " ";
 		    echo "  Unimplemented option chosen.";
 		    echo "  Enter the command without options for usage guide.";
@@ -146,6 +203,18 @@ then
 	tmppreset='/tmp/tmppreset'
 	egrep '^[^ ;&\$#`]*$' "${vfepreset}" > ${tmppreset}
 	source ${tmppreset}
+fi
+
+# examine setting
+if [ ${examine} -eq 1 ]
+then
+    echo "$settings"
+fi
+
+# exit if no file specified
+if [ -z $1 ]
+then
+    exit $E_OPTERROR;
 fi
 
 #### manage some variables, defaults, and validation
