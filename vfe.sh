@@ -1,8 +1,8 @@
 #!/bin/bash
 # video processing script
 # syntax vfe.sh [-options] invideo.ext [outvideo]
-# version 3.1
-# --option to set form of qtfaststart command
+# version 3.2
+# -- examine settings
 
 # handling for calls without arguments
 NO_ARGS=0;
@@ -34,6 +34,7 @@ then
 	echo "       (available only for ffmpeg > 6)"
 	echo "  -e : path to preset file"
 	echo "  -s : command preference: qtfaststart or qtfaststart.py"
+	echo "  -x : examine settings"
 	echo " "
 	exit $E_OPTERROR
 fi
@@ -104,7 +105,7 @@ fi
 
 # process options for width, height, etc.
 
-while getopts ":d:w:h:b:a:f:r:p:qcl:mz:t:v:y:e:s:" Option
+while getopts ":d:w:h:b:a:f:r:p:qcl:mz:t:v:y:e:s:x" Option
 do
 	case $Option in
 		d ) converter=${OPTARG};;
