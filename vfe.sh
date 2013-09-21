@@ -3,6 +3,8 @@
 # syntax vfe.sh [-options] invideo.ext [outvideo]
 # version 3.2
 # -- examine settings
+# ---- add a new flag to show verbose setting information
+# -- fix small bug with presetflag preference via command line
 
 # function to examine settings
 examine_settings() {
@@ -123,29 +125,6 @@ then
 	# explain usage and exit
 	echo " "
 	echo "  Usage: `basename $0` [-options] infile [outname]"
-#	echo "  -d : choose a converter -- 'ffmpeg' or 'avconv'"
-#	echo "  -w : width (in pixels); odd values will be reduced by one"
-#	echo "  -h : height (in pixels); odd values will be reduced by one"
-#	echo "  -b : videobitrate (in kb/s)"
-#	echo "  -a : display aspect ratio (w:h)"
-#	echo "  -f : framerate (per second)"
-#	echo "  -r : audio bit rate (in kb/s) (64 or 128 recommended)"
-#	echo "  -p : poster frame (in seconds or hh:mm:ss)"
-#	echo "  -q : create poster.mp4 for quicktime embeds"
-#	echo "  -c : copy input file to use as one of the outputs. Faster than"
-#	echo "       transcoding if specs are right. qtfaststart.py will still run."
-#	echo "  -l : set langauge using ISO 639 3-letter code (e.g., eng)"
-#	echo "  -m : create a corresponding VP8 (.webm) file"
-#	echo "  -z : set output audio sampling rate (in Hz)"
-#	echo "  -t : select a libx264 preset"
-#	echo "  -v : use -vpre (for older) or -preset (for newer) ffmpeg"
-#	echo "  -y : set webm encode quality to 'best' or 'good'."
-#	echo "       'best' is slow, but produces high quality at a lower bitrate"
-#	echo "       (available only for ffmpeg > 6)"
-#	echo "  -e : path to preset file"
-#	echo "  -s : command preference: qtfaststart or qtfaststart.py"
-#	echo "  -x : examine settings"
-#	echo " "
     echo "$settings";
 	exit $E_OPTERROR
 fi
@@ -182,7 +161,7 @@ do
 		m ) webm=1;;
 		z ) audiorate=${OPTARG};;
 		t ) ffpreset=${OPTARG};;
-		v ) presetflag="-vpre";;
+		v ) presetflag=${OPTARG};;
 		y ) webmquality=${OPTARG};;
 		e ) vfepreset=${OPTARG};;
 		s ) faststartcommand=${OPTARG};;
@@ -223,6 +202,21 @@ fi
 width=$(( ${width} - $(( ${width} % 2 )) ))
 height=$(( ${height} - $(( ${height} % 2 )) ))
 
+# validate the preset flag
+if [ "$presetflag" != "-vpre" ]
+then presetflag="-preset"
+fi
+
+# validate the webm quality
+if [ "$webmquality" != "best" ]
+then webmquality="good"
+fi
+
+# validate the faststart command
+if [ "$faststartcommand" != "qtfaststart.py" ]
+then faststartcommand="qtfaststart"
+fi
+
 # one last pass at the settings
 examine_settings "Values after a bit of validation"
 
@@ -238,6 +232,7 @@ then
     exit $E_OPTERROR;
 fi
 
+#### create some additional strings
 # create size string
 size="${width}x${height}"
 
