@@ -54,42 +54,6 @@ examine_settings() {
     "
 }
 
-# handling for calls without arguments
-NO_ARGS=0;
-E_OPTERROR=85;
-
-# if [ $# -eq "$NO_ARGS" ] #script called without args?
-if [ -z "$1" ] # no file specified
-then  
-	# explain usage and exit
-	echo " "
-	echo "  Usage: `basename $0` [-options] infile [outname]"
-	echo "  -d : choose a converter -- 'ffmpeg' or 'avconv'"
-	echo "  -w : width (in pixels); odd values will be reduced by one"
-	echo "  -h : height (in pixels); odd values will be reduced by one"
-	echo "  -b : videobitrate (in kb/s)"
-	echo "  -a : display aspect ratio (w:h)"
-	echo "  -f : framerate (per second)"
-	echo "  -r : audio bit rate (in kb/s) (64 or 128 recommended)"
-	echo "  -p : poster frame (in seconds or hh:mm:ss)"
-	echo "  -q : create poster.mp4 for quicktime embeds"
-	echo "  -c : copy input file to use as one of the outputs. Faster than"
-	echo "       transcoding if specs are right. qtfaststart.py will still run."
-	echo "  -l : set langauge using ISO 639 3-letter code (e.g., eng)"
-	echo "  -m : create a corresponding VP8 (.webm) file"
-	echo "  -z : set output audio sampling rate (in Hz)"
-	echo "  -t : select a libx264 preset"
-	echo "  -v : use -vpre (for older) or -preset (for newer) ffmpeg"
-	echo "  -y : set webm encode quality to 'best' or 'good'."
-	echo "       'best' is slow, but produces high quality at a lower bitrate"
-	echo "       (available only for ffmpeg > 6)"
-	echo "  -e : path to preset file"
-	echo "  -s : command preference: qtfaststart or qtfaststart.py"
-	echo "  -x : examine settings"
-	echo " "
-	exit $E_OPTERROR
-fi
-
 # default settings
 
 converter="ffmpeg"
@@ -149,6 +113,43 @@ examine=0;
 # record default settings
 examine_settings "Default values set by vfe.sh"
 
+# handling for calls without arguments
+NO_ARGS=0;
+E_OPTERROR=85;
+
+# if [ $# -eq "$NO_ARGS" ] #script called without args?
+if [ -z "$1" ] # no file specified
+then  
+	# explain usage and exit
+	echo " "
+	echo "  Usage: `basename $0` [-options] infile [outname]"
+#	echo "  -d : choose a converter -- 'ffmpeg' or 'avconv'"
+#	echo "  -w : width (in pixels); odd values will be reduced by one"
+#	echo "  -h : height (in pixels); odd values will be reduced by one"
+#	echo "  -b : videobitrate (in kb/s)"
+#	echo "  -a : display aspect ratio (w:h)"
+#	echo "  -f : framerate (per second)"
+#	echo "  -r : audio bit rate (in kb/s) (64 or 128 recommended)"
+#	echo "  -p : poster frame (in seconds or hh:mm:ss)"
+#	echo "  -q : create poster.mp4 for quicktime embeds"
+#	echo "  -c : copy input file to use as one of the outputs. Faster than"
+#	echo "       transcoding if specs are right. qtfaststart.py will still run."
+#	echo "  -l : set langauge using ISO 639 3-letter code (e.g., eng)"
+#	echo "  -m : create a corresponding VP8 (.webm) file"
+#	echo "  -z : set output audio sampling rate (in Hz)"
+#	echo "  -t : select a libx264 preset"
+#	echo "  -v : use -vpre (for older) or -preset (for newer) ffmpeg"
+#	echo "  -y : set webm encode quality to 'best' or 'good'."
+#	echo "       'best' is slow, but produces high quality at a lower bitrate"
+#	echo "       (available only for ffmpeg > 6)"
+#	echo "  -e : path to preset file"
+#	echo "  -s : command preference: qtfaststart or qtfaststart.py"
+#	echo "  -x : examine settings"
+#	echo " "
+    echo "$settings";
+	exit $E_OPTERROR
+fi
+
 # read user configuration
 
 configfile=~/'.vferc'
@@ -158,10 +159,9 @@ if [ -r ${configfile} ]
 then
 	egrep '^[^ ;&\$#`]*$' ${configfile} > ${configfile_secured}
 	source ${configfile_secured}
+    # record config file settings
+    examine_settings "Values after applying $configfile"
 fi
-
-# record config file settings
-examine_settings "Values after applying $configfile"
 
 # process options for width, height, etc.
 
@@ -197,24 +197,17 @@ done
 
 shift $(($OPTIND - 1))
 
+# record command line settings
+examine_settings "Values after applying command-line options"
+
 # apply values from a vfe preset file if the -e flag is set and the file exists
 if [ ${vfepreset} ] && [ -r "${vfepreset}" ]
 then
 	tmppreset='/tmp/tmppreset'
 	egrep '^[^ ;&\$#`]*$' "${vfepreset}" > ${tmppreset}
 	source ${tmppreset}
-fi
-
-# examine setting
-if [ ${examine} -eq 1 ]
-then
-    echo "$settings"
-fi
-
-# exit if no file specified
-if [ -z $1 ]
-then
-    exit $E_OPTERROR;
+    # record settings information
+    examine_settings "Values after applying the options in $vfepreset"
 fi
 
 #### manage some variables, defaults, and validation
@@ -229,6 +222,21 @@ fi
 # subtract 1 from odd dimensions
 width=$(( ${width} - $(( ${width} % 2 )) ))
 height=$(( ${height} - $(( ${height} % 2 )) ))
+
+# one last pass at the settings
+examine_settings "Values after a bit of validation"
+
+# Display settings information
+if [ ${examine} -eq 1 ]
+then
+    echo "$settings"
+fi
+
+# exit if no file specified
+if [ -z $1 ]
+then
+    exit $E_OPTERROR;
+fi
 
 # create size string
 size="${width}x${height}"
