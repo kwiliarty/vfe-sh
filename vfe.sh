@@ -92,6 +92,9 @@ presetflag="-preset"
 faststartcommand="qtfaststart.py"
 # depending on your set-up, the other alternative is "qtfaststart"
 
+# do not list out settings by default
+examine=0;
+
 # read user configuration
 
 configfile=~/'.vferc'
@@ -126,6 +129,7 @@ do
 		y ) webmquality=${OPTARG};;
 		e ) vfepreset=${OPTARG};;
 		s ) faststartcommand=${OPTARG};;
+		s ) examine=1;;
 		* ) echo " ";
 		    echo "  Unimplemented option chosen.";
 		    echo "  Enter the command without options for usage guide.";
