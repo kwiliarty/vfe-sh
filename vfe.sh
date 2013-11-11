@@ -336,11 +336,11 @@ ${faststartcommand} ${foldername}/${outname}-ss.mp4 ${foldername}/${outname}.mp4
 rm ${foldername}/${outname}-ss.mp4
 
 # create the .png poster
-ffmpeg -i ${foldername}/${outname}.${postersource} -r 1 -t 1 -ss ${poster} \
+${converter} -i ${foldername}/${outname}.${postersource} -r 1 -t 1 -ss ${poster} \
  -f image2 ${foldername}/${outname}.png
 
 # if the -q flag is set, create the poster.mp4 
 if [ ${postermp4} ]
 then 
-	ffmpeg -i ${foldername}/${outname}.png ${foldername}/${outname}-poster.mp4
+	${converter} -i ${foldername}/${outname}.png ${foldername}/${outname}-poster.mp4
 fi
