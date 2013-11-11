@@ -1,10 +1,8 @@
 #!/bin/bash
 # video processing script
 # syntax vfe.sh [-options] invideo.ext [outvideo]
-# version 3.2
-# -- examine settings
-# ---- add a new flag to show verbose setting information
-# -- fix small bug with presetflag preference via command line
+# version 3.2.1
+# -- remove a couple hard-coded ffmpeg calls to be converter-agnostic
 
 # function to examine settings
 examine_settings() {
