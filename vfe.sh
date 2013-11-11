@@ -3,6 +3,7 @@
 # syntax vfe.sh [-options] invideo.ext [outvideo]
 # version 3.2.1
 # -- remove a couple hard-coded ffmpeg calls to be converter-agnostic
+# -- suppress the webm -quality flag with avconv
 
 # function to examine settings
 examine_settings() {
@@ -303,8 +304,9 @@ fi
 postersource="mp4"
 
 # prepare for webm encode
-if [ ${webmquality} ] 
+if [ ${converter} == 'ffmpeg' ] 
 then webmqualityexpression="-quality ${webmquality} "
+else webmqualityexpression=''
 fi
 
 # create or copy a VP8 (.webm) file
