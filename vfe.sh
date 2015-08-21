@@ -50,7 +50,7 @@ examine_settings() {
       -v : presetflag=$presetflag ${line:11+${#presetflag}} : '-preset' (or '-vpre' for older ffmpeg) 
       -y : webmquality=$webmquality ${line:12+${#webmquality}} : 'best' or 'good'
       -e : vfepreset=$vfepreset ${line:10+${#vfepreset}} : Path to preset file for vfe.sh
-      -s : faststartcommand=$faststartcommand ${line:17+${#faststartcommand}} : 'qtfaststart' or 'qtfaststart.py'
+      -s : faststartcommand=$faststartcommand ${line:17+${#faststartcommand}} : 'qtfaststart', 'qtfaststart.py' or 'qt-faststart'
       -x : examine=$examine ${line:8+${#examine}} : ${examinepref}
     "
 }
@@ -106,7 +106,7 @@ presetflag="-preset"
 	# leave empty to let the video bitrate prevail
 
 faststartcommand="qtfaststart.py"
-# depending on your set-up, the other alternative is "qtfaststart"
+# depending on your set-up, the other alternatives are "qtfaststart" and "qt-faststart"
 
 # do not list out settings by default
 examine=0;
@@ -212,7 +212,7 @@ then webmquality="good"
 fi
 
 # validate the faststart command
-if [ "$faststartcommand" != "qtfaststart.py" ]
+if [ "$faststartcommand" != "qtfaststart.py" -a "$faststartcommand" != "qt-faststart" ]
 then faststartcommand="qtfaststart"
 fi
 
